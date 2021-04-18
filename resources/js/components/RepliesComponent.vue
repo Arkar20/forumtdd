@@ -15,6 +15,7 @@
                <newreply @added="added"></newreply>
             </div>
         </div>
+        <paginator :dataSet="dataSet" @changePage="getData"></paginator>
     </div>
     </div>
 </template>
@@ -22,22 +23,45 @@
 import reply from "./ReplyComponent"
 import alert from "./alert.mjs"
 import newreply from "./NewreplyComponent"
+import paginator from './PaginatorComponent.vue'
 export default{
-    props:['data'],
-    components:{reply,newreply},
+    components:{reply,newreply,paginator},
     data(){
         return{
-            items : this.data
+            dataSet:false,
+            items : []
         }
     },
+    created(){
+        this.getData()
+    },
     methods:{
+        getData(page){
+        axios.get(this.url(page)).then(
+            ({data})=>{
+              this.refresh(data)
+                }
+        )
+        },
+        refresh(data){
+            this.dataSet=data
+            this.items=data.data
+        },
+        url(page){
+         if(!page)  {
+             let query=location.search.match(/page=(\d+)/)
+             page=query?location.search.match(/page=(\d+)/)[1]:1
+         }   
+        return location.pathname+'/replies?page='+page
+        },
         added(reply){
             // console.log(reply)
-                this.items.push(reply)
+                this.getData()
                 this.$emit('added')
         },
         remove(index){
             this.items.splice(index,1)
+             this.getData()
             this.$emit('removed')
             alert.fire({    
                 icon: 'success',

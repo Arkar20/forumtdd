@@ -34,9 +34,12 @@ Route::get('/threads/{channel}', [ThreadController::class, 'index'])->name(
 Route::post('/threads', [ThreadController::class, 'store'])->name(
     'thread.store'
 );
-
 Route::get('/threads/{slug}/{thread}', [ThreadController::class, 'show']);
 Route::delete('/threads/{slug}/{thread}', [ThreadController::class, 'destroy']);
+Route::get('/threads/{slug}/{thread}/replies', [
+    ReplyController::class,
+    'index',
+]);
 Route::post('/threads/{slug}/{thread}/replies', [
     ReplyController::class,
     'store',

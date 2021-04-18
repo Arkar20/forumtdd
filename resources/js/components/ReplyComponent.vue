@@ -7,7 +7,7 @@
                                  <img src="https://i.imgur.com/CFpa3nK.jpg" alt="" class="rounded-circle mx-2" width="40" height="40">     
                             </div>
                             <div>
-                                <h4 v-text="replyname"> </h4> <span v-text="created">- </span> <br>
+                                <h4 v-text="replyname"> </h4> <span v-text="ago">- </span> <br>
                             
                             <!-- @can('delete',$reply) -->
                             <div v-if="canUpdate">
@@ -45,6 +45,8 @@
 <script>
 import alert from "./alert.mjs"
 import FavouriteComponent from './FavouriteComponent.vue'
+import moment from "moment"
+
 export default {
   components: { FavouriteComponent },
 
@@ -53,7 +55,7 @@ export default {
         return {
             body:this.data.body,
             replyname:this.data.owner.name,
-            created:this.data.owner.created_at,
+            created:this.data.created_at,
             editing:false
         }
     },
@@ -64,6 +66,9 @@ export default {
         canUpdate(){
             return this.authorize(handler=> handler.id=== this.data.owner.id);
         },
+        ago(){
+           return moment(this.created).fromNow()
+        }
     },
     methods:{
         update(){

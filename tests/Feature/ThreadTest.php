@@ -127,4 +127,12 @@ class ThreadTest extends TestCase
         $reply = create(Reply::class);
         $this->delete('/replies/' . $reply->id)->assertStatus(403);
     }
+    /** @test */
+    public function response_the_end_point_with_replies_pagination()
+    {
+        $reply = create(Reply::class, ['thread_id' => $this->thread->id]);
+
+        $responese = $this->get($this->thread->path() . '/replies')->json();
+        $this->assertCount(1, $responese['data']);
+    }
 }

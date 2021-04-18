@@ -36,7 +36,7 @@ comments.
                   
                 <div class="reply section">
                     <section>
-                <replies :data="{{$thread->replies}}" 
+                <replies 
                     @removed="replyCounts--" 
                     @added="replyCounts++"></replies>
 

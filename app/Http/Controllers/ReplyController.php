@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reply;
 use App\Models\Thread;
 use Illuminate\Http\Request;
+use App\Http\Resources\ReplyResource;
 
 class ReplyController extends Controller
 {
@@ -17,9 +18,9 @@ class ReplyController extends Controller
     {
         $this->middleware('auth');
     }
-    public function index()
+    public function index($channelid, Thread $thread)
     {
-        //
+        return new ReplyResource($thread->replies()->paginate(1));
     }
 
     /**
