@@ -22,8 +22,6 @@
     </div>
         
 
-    <div class=" pb-10 border-b border-gray-400 mx-10">
-        {{-- {{$threads->links()}} --}}
-    </div>
+Re
 
    @endsection

@@ -23,7 +23,7 @@ class ProfileTest extends TestCase
         $this->be($user);
         $this->get('/profile/' . auth()->user()->name)->assertSee($user->name);
     }
-    // /** @test */
+    /** @test */
     public function guest_cannot_view_profile()
     {
         $this->get('/profile/1')->assertRedirect('/login');

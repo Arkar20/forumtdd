@@ -4,7 +4,12 @@
         <h4>Leave a comment</h4> <label for="message">Message</label> 
         <textarea v-model="body" id="" msg cols="30" rows="5" class="form-control" style="background-color: black;"></textarea>
     </div>
-    <div class="form-group">
+    <div class="form-group" >
+        <!-- <div v-show="error.span" v-for="error in error.span" v-key="error"> -->
+        <p class="alert alert-danger" v-show="error" v-text="error[0]"></p>
+
+        <!-- </div> -->
+        <!-- <p class="alert alert-danger"  v-for="span in error.span" key="span" v-text="span"></p> -->
         <p class="text-secondary">If you have a <a href="#" class="alert-link">gravatar account</a> your address will be used to display your profile picture.</p>
     </div>
     <div class="form-inline"> <input type="checkbox" name="check" id="checkbx" class="mr-1"> <label for="subscribe">Subscribe me to the newlettter</label> </div>
@@ -18,7 +23,8 @@
        data(){
            return {
                body:'',
-               endpoint:'',
+               endpoint:location.pathname,
+               error:false,
            }
        },
        computed:{
@@ -28,19 +34,20 @@
        },
        methods:{
            addReply(){
-               axios.post('/threads/sit/55/replies',{body:this.body}).then(
+               axios.post(this.endpoint+'/replies',{body:this.body})
+               .catch((error)=>{
+                   this.error=error.response.πapp.errors.body
+                   console.log(this.error)
+                   })
+               .then(
                    (response=>{
                        this.body=''
                         this.$emit('added',response.data)
-                        alert.fire({    
-                        icon: 'success',
-                        title: 'Reply Created Successful'
-                })
+                      
                    })
                )
            }
-       }
-
+       },
    }
     </script>
     

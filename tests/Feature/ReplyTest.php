@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Reply;
 use App\Models\Thread;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,7 +49,31 @@ class ReplyTest extends TestCase
         $reply = make(Reply::class);
 
         $this->post($this->thread->path() . '/replies', $reply->toArray());
+        $this->assertDatabaseHas('replies', ['body' => $reply->body]);
+        $reply->thread()->increment('replies_count');
 
-        $this->get($this->thread->path())->assertSee($reply->body);
+        $this->assertEquals(2, $reply->thread->replies_count);
+    }
+    /** @test */
+    public function reply_that_contains_the_span_does_not_create()
+    {
+        $reply = make(Reply::class, [
+            'body' => 'nnn',
+        ]);
+
+        $this->post($this->thread->path() . '/replies', $reply->toArray());
+    }
+    public function it_cannot_reply_frequently()
+    {
+        $reply = make(Reply::class);
+        $this->post(
+            $this->thread->path() . '/replies',
+            $reply->toArray()
+        )->assertStatus(200);
+
+        $this->post(
+            $this->thread->path() . '/replies',
+            $reply->toArray()
+        )->assertStatus(422);
     }
 }

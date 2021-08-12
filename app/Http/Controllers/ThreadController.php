@@ -7,6 +7,7 @@ use App\Models\Thread;
 use App\Models\Channel;
 use Illuminate\Http\Request;
 use App\Filters\ThreadFilter;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ThreadController extends Controller
@@ -86,11 +87,22 @@ class ThreadController extends Controller
      */
     public function show($channel, Thread $thread)
     {
+        $this->markAsVisited($thread);
+
         return view('threads.single', [
-            'thread' => $thread->load('replies.owner'),
+            'thread' => $thread->load('replies.owner')->append('isSubscribed'),
         ]);
     }
-
+    public function markAsVisited($thread)
+    {
+        // $key = sprintf('user.%s.visits.%s', auth()->id(), $id);
+        cache()->forever(
+            auth()
+                ->user()
+                ->makeCacheKey($thread),
+            Carbon::now()
+        );
+    }
     /**
      * Show the form for editing the specified resource.
      *

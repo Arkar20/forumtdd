@@ -41,19 +41,7 @@ class ReplyPolicy
      */
     public function create(User $user)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Reply  $reply
-     * @return mixed
-     */
-    public function update(User $user, Reply $reply)
-    {
-        //
+        return !$user->lastReply->wasUploaded();
     }
 
     /**
@@ -66,29 +54,5 @@ class ReplyPolicy
     public function delete(User $user, Reply $reply)
     {
         return $reply->owner->is($user);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Reply  $reply
-     * @return mixed
-     */
-    public function restore(User $user, Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Reply  $reply
-     * @return mixed
-     */
-    public function forceDelete(User $user, Reply $reply)
-    {
-        //
     }
 }

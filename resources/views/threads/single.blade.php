@@ -23,14 +23,19 @@
                     @include('threads.section.threadblock')
                 </div>
                 <div class="thread-info">
-                    <div class=" darker mt-4 float-right text-white">
-                             {{$thread->author->name}} Created the thread at {{$thread->created_at}}
-    and has 
-                        <span v-text="replyCounts"></span>
-comments.
-                    
-                </div>
-                </div>
+                    <div class=" darker mt-4 float-right text-white my-2">
+                          <p>
+                              
+                              {{$thread->author->name}} Created the thread at {{$thread->created_at}}
+                    and has 
+                           <span v-text="replyCounts"></span>
+   comments.
+                        </p>
+                        <subscribebutton :active="{{$thread->isSubscribed?'true':'false'}}"></subscribebutton>
+
+</div>
+
+            </div>
              </div>
                 
                   

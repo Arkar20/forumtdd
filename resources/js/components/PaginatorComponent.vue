@@ -2,7 +2,7 @@
     <div>
         <nav aria-label="Page navigation example" v-if="shouldDisplayPaginate">
         <ul class="pagination">
-            <li class="page-item" v-show="prevurl"><button class="page-link" href="#" @click="page--">Previous</button></li>
+            <li class="page-item" v-show="prevurl" ><button class="page-link" href="#" @click="page--">Previous</button></li>
             <li class="page-item" v-show="nexturl"><button class="page-link" href="#" @click="page++">Next</button></li>
         </ul>
 </nav>
@@ -10,8 +10,8 @@
 </template>
 <script>
 export default {
-    props:['dataSet'],
-    data(){
+    props:['dataSet
+
         return {
             page:1,
             prevurl:false,

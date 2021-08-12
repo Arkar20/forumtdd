@@ -8,12 +8,6 @@ import Swal from 'sweetalert2'
 export default {
     methods:{
         click(){
-//             Swal.bindClickHandler()
-
-// Swal.mixin({
-//   toast: true,
-// }).bindClickHandler('data-swal-toast-template')
-           
 
 const Toast = Swal.mixin({
   toast: true,

@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Models\User;
 use App\Models\Reply;
 use App\Models\Thread;
+use App\Rules\SpanFree;
+use App\Rules\FrequentReply;
 use Illuminate\Http\Request;
+use App\Notifications\MentionUser;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\ReplyResource;
 
 class ReplyController extends Controller
@@ -20,70 +26,42 @@ class ReplyController extends Controller
     }
     public function index($channelid, Thread $thread)
     {
-        return new ReplyResource($thread->replies()->paginate(1));
+        return new ReplyResource(
+            $thread
+                ->replies()
+                ->latest()
+                ->paginate(1)
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  $slug
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store($slug, Thread $thread, Request $request)
     {
-        // dd($thread);
+        // $span->detect(request('body'));
+        $this->vaidateReply();
+
+        // if (Gate::denies('create', new Reply())) {
+        //     return response('You are Posting too Frequently', 422);
+        // }
+
         $reply = $thread->addReply([
             'user_id' => auth()->user()->id,
             'body' => $request->body,
         ]);
-        if (request()->expectsJson()) {
-            return $reply->load('owner');
+
+        preg_match_all('/\@([^\s\.])+/', $reply->body, $matches);
+        dd($matches);
+        foreach ($matches[1] as $name) {
+            $user = User::where('name', $name)->get();
+            if ($user) {
+                $user->notify(new MentionUser($reply));
+            }
         }
-        return back();
+        return $reply->load('owner');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Reply $reply)
     {
+        $this->vaidateReply();
         $this->authorize('delete', $reply);
 
         $reply->update(['body' => request('body')]);
@@ -104,12 +82,16 @@ class ReplyController extends Controller
     {
         $this->authorize('delete', $reply);
         $reply->delete();
-        // $reply->favourites()->delete();
-        // $reply->activity()->delete();
         if (request()->expectsJson()) {
             return response(['status' => 'Reply updated']);
         }
         return back();
-        return back();
+    }
+    public function vaidateReply()
+    {
+        $this->validate(request(), [
+            'body' => ['required', new SpanFree(), new FrequentReply()],
+        ]);
+        // resolve(Span::class)->detect(request('body'));
     }
 }

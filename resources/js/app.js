@@ -15,6 +15,8 @@ Vue.prototype.authorize = function (handler) {
 // Vue.component('flash-component', require('./components/FlashComponent.vue').default);
 // Vue.component('button-component', require('./components/ButtonComponent.vue').default);
 Vue.component('thread-view', require('./pages/ThreadComponent.vue').default);
+Vue.component('notification-dropdown', require('./components/NotificationLinksComponent.vue').default);
+Vue.component('thread-create', require('./components/ThreadCreateComponent.vue').default);
 
 
 const app = new Vue({

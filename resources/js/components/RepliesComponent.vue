@@ -50,12 +50,11 @@ export default{
         url(page){
          if(!page)  {
              let query=location.search.match(/page=(\d+)/)
-             page=query?location.search.match(/page=(\d+)/)[1]:1
+             page=query?location.search.match(/pa`ge=(\d+)/)[1]:1
          }   
         return location.pathname+'/replies?page='+page
         },
         added(reply){
-            // console.log(reply)
                 this.getData()
                 this.$emit('added')
         },

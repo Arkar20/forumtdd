@@ -25,8 +25,9 @@
                <p class="text-center">Please  <a class="text-blue-800" href="{{ route('login') }}">sign in </a>  to create thread</p>
                 
             @else
-                @include('threads.section.createForm')
-            @endif
+                {{-- @include('threads.section.createForm') --}}
+            <thread-create></thread-create>
+                @endif
     </div>
    
 @endsection

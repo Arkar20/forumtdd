@@ -8,8 +8,11 @@ use App\Models\User;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\Channel;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use App\Notifications\ThreadUpdated;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Testing\Fakes\NotificationFake;
 
 class ThreadTest extends TestCase
 {
@@ -135,4 +138,25 @@ class ThreadTest extends TestCase
         $responese = $this->get($this->thread->path() . '/replies')->json();
         $this->assertCount(1, $responese['data']);
     }
+    /** @test */
+    public function thread_can_be_filterd_by_unanswered_replies()
+    {
+        //then we see the threads with 0 replies count
+        $thread = create(Thread::class);
+        $reply = create(Reply::class, ['thread_id' => $thread->id]);
+        $this->get('/threads?unanswered=1')->assertDontSee($thread->body);
+    }
+    /** @test */
+    public function notify_the_subscribers_when_a_reply_is_added_to_the_thread()
+    {
+        Notification::fake();
+        $this->thread->subscribe();
+
+        $this->thread->addReply([
+            'body' => 'something',
+            'user_id' => 2,
+        ]);
+        Notification::assertSentTo(auth()->user(), ThreadUpdated::class);
+    }
+    /** @test */
 }

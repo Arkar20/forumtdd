@@ -1,10 +1,13 @@
 <?php
 
+use App\Models\ThreadSubscription;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavouriteController;
+use App\Http\Controllers\NotificationThreadController;
+use App\Http\Controllers\ThreadNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +47,10 @@ Route::post('/threads/{slug}/{thread}/replies', [
     ReplyController::class,
     'store',
 ]);
+Route::post('/threads/{slug}/{thread}/subscriptions', [
+    ThreadSubscription::class,
+    'store',
+])->middleware('auth');
 Route::post('/replies/{reply}/favourites', [
     FavouriteController::class,
     'store',
@@ -56,6 +63,14 @@ Route::delete('/replies/{reply}/favourites', [
 Route::delete('replies/{reply}', [ReplyController::class, 'destroy']);
 Route::patch('replies/{reply}', [ReplyController::class, 'update']);
 
+Route::get('/profile/{user}/notifications', [
+    ThreadNotificationController::class,
+    'index',
+]);
+Route::delete('/profile/{user}/notifications/{notificationid}', [
+    ThreadNotificationController::class,
+    'update',
+]);
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name(
     'profile'
 );

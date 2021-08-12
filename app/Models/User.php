@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Models\Activity;
+use App\Notifications\ThreadUpdated;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,6 +41,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Thread::class);
     }
+    public function lastReply()
+    {
+        return $this->hasOne(Reply::class)->latest();
+    }
+
     public function reply()
     {
         return $this->hasMany(Reply::class);
@@ -51,5 +57,9 @@ class User extends Authenticatable
     public function getRouteKeyName()
     {
         return 'name';
+    }
+    public function makeCacheKey($thread)
+    {
+        return sprintf('user.%s.visits.%s', auth()->id(), $thread->id);
     }
 }

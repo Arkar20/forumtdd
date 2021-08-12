@@ -62,12 +62,39 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown">
+                        <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">My Threads</a>
+                        </li>
+                                 <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Threads Filter
+                                </a>
+                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/threads?popular=1">
+                                      Popular Threads
+                                    </a>
+                                    <a class="dropdown-item" href="/threads">
+                                      All Threads
+                                    </a>
+                                    <a class="dropdown-item" href="/threads?unanswered=1">
+                                      Unreplied Threads
+                                    </a>
+
+                                  
+                                </div>
+
+                               
+                             </li>
+                             {{-- //navfornotifications --}}
+                        <notification-dropdown></notification-dropdown>
+                            {{-- navfoßrnotifications --}}
+                            <li class="nav-item dropdown">
+                                <a id="navForNoti" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
+                          
 
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navForNoti">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
